@@ -18,7 +18,7 @@ public protocol RadioPlayerType {
     func seek(to position: TimeInterval)
     func skip(stepInterval: TimeInterval)
     
-    // TODO: Separate from `MediaPlayController`
+    // TODO: Separate from `MediaPlayController` rather than extension.
     func setupObservers(publisher: AnyPublisher<NowPlayingInfo?, Never>)
 }
 
