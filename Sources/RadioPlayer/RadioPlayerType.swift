@@ -2,7 +2,15 @@ import Combine
 import Foundation
 import AVFoundation
 
-public @objc protocol RadioPlayerType {
+@objc public protocol MediaPlayerType {
+    func play(url: URL)
+    func play()
+    func pause()
+    func stop()
+    func togglePlaying()
+}
+
+public protocol RadioPlayerType {
     var state: AnyPublisher<RadioPlayerState, Never> { get }
     var playbackState: AnyPublisher<RadioPlayerPlaybackState, Never> { get }
     var playProgress: AnyPublisher<Progress, Never> { get }
