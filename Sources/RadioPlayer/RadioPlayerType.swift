@@ -2,7 +2,7 @@ import Combine
 import Foundation
 import AVFoundation
 
-public protocol RadioPlayerType {
+public @objc protocol RadioPlayerType {
     var state: AnyPublisher<RadioPlayerState, Never> { get }
     var playbackState: AnyPublisher<RadioPlayerPlaybackState, Never> { get }
     var playProgress: AnyPublisher<Progress, Never> { get }
