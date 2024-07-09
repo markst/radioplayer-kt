@@ -1,19 +1,27 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import co.touchlab.skie.configuration.EnumInterop
+import co.touchlab.skie.configuration.SealedInterop
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    id("io.github.ttypic.swiftklib")
+    id("co.touchlab.skie") version "0.8.2"
 }
 
-swiftklib {
-    create("RadioPlayer") {
-        path = file("native/RadioPlayer")
-        packageName("dev.markturnip.radioplayer")
+skie {
+    features {
+        group("co.touchlab.skie.types") {
+            SealedInterop.Enabled(false)
+            EnumInterop.Enabled(false)
+        }
     }
 }
 
 kotlin {
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
     androidTarget {
         compilations.all {
             kotlinOptions {
@@ -35,8 +43,8 @@ kotlin {
         }
         it.compilations {
             val main by getting {
-                cinterops {
-                    create("RadioPlayer")
+                val myInterop by cinterops.creating {
+                    definitionFile.set(project.file("radioplayer.def"))
                 }
             }
         }

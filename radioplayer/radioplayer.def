@@ -1,0 +1,3 @@
+package = com.mt.player
+language = Objective-C
+headers = /Users/turner.mark/AndroidStudioProjects/radioplayer/radioplayer/build/bin/iosArm64/debugFramework/radioplayer.framework/Headers/radioplayer-Swift.h

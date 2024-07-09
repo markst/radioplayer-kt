@@ -1,7 +1,7 @@
 [versions]
 agp = "8.5.0"
 koin = "3.5.6"
-kotlin = "2.0.20-dev-7572"
+kotlin = "2.0.0"
 kotlinx = "1.8.1-Beta"
 compose = "1.5.4"
 compose-material3 = "1.1.2"
