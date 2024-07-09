@@ -1,6 +1,17 @@
+*.iml
+.gradle
+.idea
 .DS_Store
+.kotlin
+.build
+build
+captures
+.externalNativeBuild
+.cxx
+local.properties
 /.build
 /Packages
+xcuserdata
 xcuserdata/
 DerivedData/
 .swiftpm/configuration/registries.json
