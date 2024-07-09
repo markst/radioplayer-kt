@@ -191,7 +191,7 @@ import Combine
             .store(in: &cancellables)
     }
 
-    @objc public func cancelSubscriptions() {
+    @objc public func cancelSubscriptios() {
         cancellables.removeAll()
     }
 }

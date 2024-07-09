@@ -1,5 +1,6 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
+    includeBuild("swift-klib-plugin.git")
     repositories {
         google()
         gradlePluginPortal()
