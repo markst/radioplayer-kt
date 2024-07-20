@@ -8,8 +8,11 @@ public protocol RadioPlayerType {
     var playProgress: AnyPublisher<Progress, Never> { get }
     var isPlaying: AnyPublisher<Bool, Never> { get }
     
+    // Rename load media?
     func play(url: URL)
     func play(url: URL, at position: NSNumber?)
+    func play(url: URL, at position: NSNumber?, info: NowPlayingInfo?)
+
     func play()
     func pause()
     func stop()
@@ -17,13 +20,11 @@ public protocol RadioPlayerType {
 
     func skip(_ delta: Double)
     func seek(position: TimeInterval)
-
-    // TODO: Separate from `MediaPlayController` rather than extension.
-    func setupObservers(publisher: AnyPublisher<NowPlayingInfo?, Never>)
 }
 
 public struct Progress {
     public let id: Int
+    // TODO: Rename elapsed time to indicate it's the time in seconds rather than floating point
     public let progress: TimeInterval
     public let duration: TimeInterval
 }

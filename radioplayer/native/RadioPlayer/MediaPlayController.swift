@@ -5,14 +5,19 @@ import Combine
 @objc public class MediaPlayController: NSObject, RadioPlayerType {
     internal var player: AVPlayer
     internal var cancellables: Set<AnyCancellable> = []
-
+    internal var remoteCommandCenter: RemoteCommandCenter?
+    internal var nowPlayingInfoCenter: NowPlayingInfoCenter?
+    @Published
+    internal var nowPlayingInfo: NowPlayingInfo?
+    
     // MARK: - Init
 
     public override init() {
         self.player = AVPlayer()
         super.init()
+        self.remoteCommandCenter = .init(radioPlayer: self)
+        self.nowPlayingInfoCenter = .init(radioPlayer: self, publisher: $nowPlayingInfo.eraseToAnyPublisher())
 
-        setupRemoteTransportControls()
         setupNotifications()
 
         // TODO: Figure out why I was looking up current outputs:
@@ -67,7 +72,6 @@ import Combine
                     return .stopped
                 }
             }
-            .print("timeControlStatus")
             .eraseToAnyPublisher()
     }
 
@@ -85,7 +89,6 @@ import Combine
                     return .buffering
                 }
             }
-            .print("status")
             .eraseToAnyPublisher()
     }
 
@@ -112,7 +115,6 @@ import Combine
                     }
             }
             .switchToLatest()
-            .print("playProgress")
             .eraseToAnyPublisher()
     }
 
@@ -122,7 +124,11 @@ import Combine
         self.play(url: url, at: nil)
     }
 
-    @objc public func play(url: URL, at position: NSNumber? = nil) {
+    @objc public func play(url: URL, at position: NSNumber?) {
+        self.play(url: url, at: nil, info: nil)
+    }
+
+    @objc public func play(url: URL, at position: NSNumber? = nil, info: NowPlayingInfo? = nil) {
         debugPrint(#function, url, position as Any)
         activateAudioSession()
 
@@ -138,6 +144,7 @@ import Combine
         }
 
         player.play()
+        nowPlayingInfo = info
     }
 
     @objc public func play() {
