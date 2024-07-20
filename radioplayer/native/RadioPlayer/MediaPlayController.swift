@@ -100,6 +100,7 @@ import Combine
                             .periodicTimePublisher()
                             .prepend(.zero),
                         item.publisher(for: \.duration)
+                            .filter { $0.isValidCMTime }
                             .compactMap({ $0 })
                     )
                     .map {
