@@ -3,7 +3,7 @@ import MediaPlayer
 import Combine
 import UIKit.UIImage
 
-public struct NowPlayingInfo {
+public class NowPlayingInfo: NSObject {
     var title: String
     var artist: String?
     var artwork: UIImage?
@@ -17,66 +17,64 @@ public struct NowPlayingInfo {
     }
 }
 
-extension MediaPlayController {
-    // MARK: - Remote Command Center
+public class NowPlayingInfoCenter {
+    internal var cancellables: Set<AnyCancellable> = []
     
-    func setupRemoteTransportControls() {
-        let commandCenter = MPRemoteCommandCenter.shared()
-        
-        // TODO: Add seek forward and back targets
-        // TODO: Add `changePlaybackPositionCommand` and toggle playback commands.
-        
-        commandCenter.playCommand.addTarget { [unowned self] _ in
-            if self.player.rate == 0 {
-                self.play()
-                return .success
-            }
-            return .commandFailed
-        }
-        
-        commandCenter.pauseCommand.addTarget { [unowned self] _ in
-            if self.player.rate != 0 {
-                self.pause()
-                return .success
-            }
-            return .commandFailed
-        }
-    }
+    // MARK: - Init
     
-    // MARK: - Now Playing Info
-    
-    func setupNowPlaying() {
-
-
-    }
-    
-    private func updateNowPlaying(isPause: Bool, info: NowPlayingInfo?) {
-        var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [:]
-        
-        nowPlayingInfo[MPMediaItemPropertyTitle] = info?.title
-        nowPlayingInfo[MPMediaItemPropertyArtist] = info?.artist
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime().seconds
-        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = isPause ? 0 : 1
-        
-        if let image = info?.artwork {
-            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: image.size) { size in
-                return image
-            }
-        }
-        
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-
-    }
-    
-    // MARK: - Observers
-    
-    public func setupObservers(publisher: AnyPublisher<NowPlayingInfo?, Never>) {
-        // TODO: Combine state or did seek in order to trigger `nowPlayingInfo` on significant play head change.
-        Publishers.CombineLatest(player.publisher(for: \.timeControlStatus), publisher)
-            .sink { [weak self] (status, info) in
-                self?.updateNowPlaying(isPause: status == .playing, info: info)
+    public init(
+        radioPlayer: RadioPlayerType,
+        publisher: AnyPublisher<NowPlayingInfo?, Never>
+    ) {
+        Publishers
+            .CombineLatest4(
+                radioPlayer.state,
+                radioPlayer.playbackState,
+                radioPlayer.playProgress.filterSignficant(threshold: 10).compactMap({ $0 }),
+                publisher
+            )
+            .sink { [weak self] (state, playbackState, playProgress, info) in
+                if case .failed = playbackState {
+                    MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+                } else {
+                    self?.updateNowPlaying(info: info, state: state, progress: playProgress)
+                }
             }
             .store(in: &cancellables)
     }
     
+    func updateNowPlaying(info: NowPlayingInfo?, state: RadioPlayerState, progress: Progress) {
+        debugPrint(#function, info as Any, state, progress)
+
+        var nowPlayingInfo = [String: Any]()
+        let duration = (progress.duration.isNaN || progress.duration <= 0) == false ? progress.duration : info?.duration
+        nowPlayingInfo[MPNowPlayingInfoPropertyIsLiveStream] = duration == nil
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress.progress  /// updating this property frequently is not required (or recommended.)
+        nowPlayingInfo[MPNowPlayingInfoPropertyMediaType] = NSNumber(value: MPNowPlayingInfoMediaType.audio.rawValue)
+
+        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration
+        nowPlayingInfo[MPMediaItemPropertyTitle] = info?.title
+        nowPlayingInfo[MPMediaItemPropertyArtist] = info?.artist
+        nowPlayingInfo[MPMediaItemPropertyArtwork] = info?.artwork.map { image in
+            MPMediaItemArtwork(
+                boundsSize: image.size,
+                requestHandler: { _ in image }
+            )
+        }
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    }
+}
+
+extension Publisher where Output == Progress {
+    func filterSignficant(threshold: Double) -> AnyPublisher<Progress?, Failure> {
+        scan((Progress?.none, Progress?.none)) { previous, current in
+            (previous.1, current)
+        }
+        .filter { previous, current in
+            guard let previous = previous?.progress, let current = current?.progress else { return true }
+            return abs(previous - current) >= threshold
+        }
+        .map { $0.1 }
+        .eraseToAnyPublisher()
+    }
 }
