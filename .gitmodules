@@ -1,4 +1,0 @@
-[submodule "swift-klib-plugin.git"]
-	path = swift-klib-plugin.git
-	url = https://github.com/ttypic/swift-klib-plugin.git
-	branch = feature/cinterop-modules-instead-of-headers
