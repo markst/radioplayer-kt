@@ -10,6 +10,7 @@ swiftklib {
     create("RadioPlayer") {
         path = file("native/RadioPlayer")
         packageName("dev.markturnip.radioplayer")
+        minIos = 14
     }
 }
 
