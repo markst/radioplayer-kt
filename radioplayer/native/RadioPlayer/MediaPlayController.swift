@@ -103,8 +103,8 @@ import Combine
                             .periodicTimePublisher()
                             .prepend(.zero),
                         item.publisher(for: \.duration)
-                            .filter { $0.isValidCMTime }
-                            .compactMap({ $0 })
+                            .filter { CMTIME_IS_INDEFINITE($0) ? true : $0.isValidCMTime }
+                            .compactMap { $0 }
                     )
                     .map {
                         Progress(
@@ -181,7 +181,7 @@ import Combine
 
     @objc public func seek(position: TimeInterval) {
         debugPrint(#function)
-        player.seek(to: CMTime(seconds: position, preferredTimescale: 1))
+        player.seek(to: CMTime(seconds: position, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
     }
 
     // MARK: - Subscriptions
