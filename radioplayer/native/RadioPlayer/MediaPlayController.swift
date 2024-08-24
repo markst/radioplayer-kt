@@ -132,7 +132,7 @@ import Combine
         debugPrint(#function, url, position as Any)
         activateAudioSession()
 
-        let playerItem = AVPlayerItem(url: url)
+        let playerItem = CustomAVPlayerItem(url: url, info: info)
         player.replaceCurrentItem(with: playerItem)
 
         if let startTime = position?.doubleValue {
