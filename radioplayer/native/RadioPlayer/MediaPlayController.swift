@@ -103,7 +103,8 @@ import Combine
                             .periodicTimePublisher()
                             .prepend(.zero),
                         item.publisher(for: \.duration)
-                            .filter { CMTIME_IS_INDEFINITE($0) ? true : $0.isValidCMTime }
+                            .print("duration") // TODO: Skip if live? initial duration is indefinite
+                            .filter { $0.isValidCMTime }
                             .compactMap { $0 }
                     )
                     .map {
