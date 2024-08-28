@@ -29,6 +29,7 @@ import Combine
         // player.publisher(for: \.currentItem)
         //     .compactMap { $0?.publisher(for: \.error) }
         //     .switchToLatest()
+        
     }
 
     private var audioSession: AVAudioSession {
@@ -46,19 +47,21 @@ import Combine
 
     // MARK: - RadioPlayerType
 
-    public var isPlaying: AnyPublisher<Bool, Never> {
+    public lazy var isPlaying: AnyPublisher<Bool, Never> = {
         player.publisher(for: \.rate)
             .map { $0 != 0 }
+            .share()
             .eraseToAnyPublisher()
-    }
+    }()
 
-    public var rate: AnyPublisher<Float?, Never> {
+    public lazy var rate: AnyPublisher<Float?, Never> = {
         player.publisher(for: \.rate)
             .map { Optional($0) }
+            .share()
             .eraseToAnyPublisher()
-    }
+    }()
 
-    public var state: AnyPublisher<RadioPlayerState, Never> {
+    public lazy var state: AnyPublisher<RadioPlayerState, Never> = {
         player.publisher(for: \.timeControlStatus)
             .map { status in
                 switch status {
@@ -72,10 +75,11 @@ import Combine
                     return .stopped
                 }
             }
+            .share()
             .eraseToAnyPublisher()
-    }
+    }()
 
-    public var playbackState: AnyPublisher<RadioPlayerPlaybackState, Never> {
+    public lazy var playbackState: AnyPublisher<RadioPlayerPlaybackState, Never> = {
         player.publisher(for: \.status)
             .map { status in
                 switch status {
@@ -89,10 +93,11 @@ import Combine
                     return .buffering
                 }
             }
+            .share()
             .eraseToAnyPublisher()
-    }
+    }()
 
-    public var playProgress: AnyPublisher<Progress, Never> {
+    public lazy var playProgress: AnyPublisher<Progress, Never> = {
         player
             .publisher(for: \.currentItem)
             .compactMap { $0 }
@@ -116,8 +121,23 @@ import Combine
                     }
             }
             .switchToLatest()
+            .share()
             .eraseToAnyPublisher()
-    }
+    }()
+    
+    lazy var didPlayToEndTime: AnyPublisher<Void, Never> = {
+        player
+            .publisher(for: \.currentItem)
+            .compactMap {
+                NotificationCenter.default.publisher(
+                    for: .AVPlayerItemDidPlayToEndTime,
+                    object: $0
+                )
+                .compactMap { $0.object as? AVPlayerItem }
+            }
+            .share()
+            .eraseToAnyPublisher()
+    }()
 
     // MARK: - Playback Controls
 
