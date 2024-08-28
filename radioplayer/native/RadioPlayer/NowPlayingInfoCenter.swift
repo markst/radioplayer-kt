@@ -41,26 +41,49 @@ public class NowPlayingInfoCenter {
                 }
             }
             .store(in: &cancellables)
+        
+        radioPlayer.state
+            .map { state -> MPNowPlayingPlaybackState in
+                switch state {
+                case .paused:
+                    return .paused
+                case .playing, .buffering:
+                    return .playing
+                case .stopped:
+                    return .stopped
+                }
+            }
+            .sink {
+                if #available(iOS 13.0, *) {
+                    MPNowPlayingInfoCenter.default().playbackState = $0
+                }
+            }
+            .store(in: &cancellables)
     }
     
     func updateNowPlaying(info: NowPlayingInfo?, state: RadioPlayerState, progress: Progress) {
         debugPrint(#function, info as Any, state, progress)
+        guard let info else {
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+            return
+        }
 
         var nowPlayingInfo = [String: Any]()
-        let duration = (progress.duration.isNaN || progress.duration <= 0) == false ? progress.duration : info?.duration
+        let duration = (progress.duration.isNaN || progress.duration <= 0) == false ? progress.duration : info.duration
         nowPlayingInfo[MPNowPlayingInfoPropertyIsLiveStream] = duration == nil
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress.progress  /// updating this property frequently is not required (or recommended.)
         nowPlayingInfo[MPNowPlayingInfoPropertyMediaType] = NSNumber(value: MPNowPlayingInfoMediaType.audio.rawValue)
 
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration
-        nowPlayingInfo[MPMediaItemPropertyTitle] = info?.title
-        nowPlayingInfo[MPMediaItemPropertyArtist] = info?.artist
-        nowPlayingInfo[MPMediaItemPropertyArtwork] = info?.artwork.map { image in
+        nowPlayingInfo[MPMediaItemPropertyTitle] = info.title
+        nowPlayingInfo[MPMediaItemPropertyArtist] = info.artist
+        nowPlayingInfo[MPMediaItemPropertyArtwork] = info.artwork.map { image in
             MPMediaItemArtwork(
                 boundsSize: image.size,
                 requestHandler: { _ in image }
             )
         }
+
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
 }
