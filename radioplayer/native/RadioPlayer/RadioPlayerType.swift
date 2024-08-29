@@ -7,7 +7,8 @@ public protocol RadioPlayerType {
     var playbackState: AnyPublisher<RadioPlayerPlaybackState, Never> { get }
     var playProgress: AnyPublisher<Progress, Never> { get }
     var isPlaying: AnyPublisher<Bool, Never> { get }
-    
+    var didPlayToEndTime: AnyPublisher<NowPlayingInfo?, Never> { get }
+
     // Rename load media?
     func play(url: URL)
     func play(url: URL, at position: NSNumber?)

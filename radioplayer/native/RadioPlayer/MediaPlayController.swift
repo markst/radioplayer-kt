@@ -125,16 +125,18 @@ import Combine
             .eraseToAnyPublisher()
     }()
     
-    lazy var didPlayToEndTime: AnyPublisher<Void, Never> = {
+    lazy public var didPlayToEndTime: AnyPublisher<NowPlayingInfo?, Never> = {
         player
             .publisher(for: \.currentItem)
             .compactMap {
                 NotificationCenter.default.publisher(
-                    for: .AVPlayerItemDidPlayToEndTime,
+                    for: AVPlayerItem.didPlayToEndTimeNotification,
                     object: $0
                 )
-                .compactMap { $0.object as? AVPlayerItem }
+                .compactMap { $0.object as? CustomAVPlayerItem }
             }
+            .switchToLatest()
+            .map { $0.info }
             .share()
             .eraseToAnyPublisher()
     }()
