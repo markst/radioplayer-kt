@@ -30,7 +30,8 @@ public class NowPlayingInfoCenter {
             .CombineLatest4(
                 radioPlayer.state,
                 radioPlayer.playbackState,
-                radioPlayer.playProgress.filterSignficant(threshold: 10).compactMap({ $0 }),
+                radioPlayer.playProgress
+                    .throttle(for: .seconds(5), scheduler: DispatchQueue.main, latest: true),
                 publisher
             )
             .sink { [weak self] (state, playbackState, playProgress, info) in
@@ -71,6 +72,7 @@ public class NowPlayingInfoCenter {
         var nowPlayingInfo = [String: Any]()
         let duration = (progress.duration.isNaN || progress.duration <= 0) == false ? progress.duration : info.duration
         nowPlayingInfo[MPNowPlayingInfoPropertyIsLiveStream] = duration == nil
+        // TODO: Use `player.currentTime().seconds` rather?
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress.progress  /// updating this property frequently is not required (or recommended.)
         nowPlayingInfo[MPNowPlayingInfoPropertyMediaType] = NSNumber(value: MPNowPlayingInfoMediaType.audio.rawValue)
 
