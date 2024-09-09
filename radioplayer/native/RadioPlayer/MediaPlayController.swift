@@ -213,6 +213,14 @@ import Combine
         player.seek(to: CMTime(seconds: position, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
     }
 
+    
+    // MARK: - Value Getters
+
+    @objc public func currentTime() -> NSNumber? {
+        guard player.currentTime().isValidCMTime else { return nil }
+        return NSNumber(value: player.currentTime().seconds)
+    }
+    
     // MARK: - Subscriptions
 
     @objc public func subscribeProgress(callback: @escaping (_ progress: TimeInterval, _ duration: TimeInterval) -> Void) {
