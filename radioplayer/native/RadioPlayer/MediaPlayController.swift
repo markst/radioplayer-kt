@@ -15,20 +15,18 @@ import Combine
     public override init() {
         self.player = AVPlayer()
         super.init()
-        self.remoteCommandCenter = .init(radioPlayer: self)
-        self.nowPlayingInfoCenter = .init(radioPlayer: self, publisher: $nowPlayingInfo.eraseToAnyPublisher())
+        self.remoteCommandCenter = .init(
+            radioPlayer: self
+        )
+        self.nowPlayingInfoCenter = .init(
+            radioPlayer: self,
+            publisher: $nowPlayingInfo.eraseToAnyPublisher()
+        )
 
         setupNotifications()
 
         // TODO: Figure out why I was looking up current outputs:
         // AVAudioSession.sharedInstance().currentRoute.outputs.first?.portType == .
-
-        // TODO: current item on `AVPlayerItemDidPlayToEndTime`?
-
-        // TODO: Handle current item error state:
-        // player.publisher(for: \.currentItem)
-        //     .compactMap { $0?.publisher(for: \.error) }
-        //     .switchToLatest()
         
     }
 
@@ -124,7 +122,15 @@ import Combine
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
+    lazy public var errorPublisher: AnyPublisher<Error, Never> = {
+        player.publisher(for: \.currentItem)
+            .compactMap { $0?.publisher(for: \.error) }
+            .switchToLatest()
+            .compactMap { $0 } // playerItem?.errorLog()?.events.first?.errorStatusCode
+            .eraseToAnyPublisher()
+    }()
+
     lazy public var didPlayToEndTime: AnyPublisher<NowPlayingInfo?, Never> = {
         player
             .publisher(for: \.currentItem)
