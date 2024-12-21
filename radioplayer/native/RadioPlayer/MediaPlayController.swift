@@ -3,7 +3,7 @@ import SwiftUI
 import Combine
 
 @objc public class MediaPlayController: NSObject, RadioPlayerType {
-    internal var player: AVPlayer
+    internal var player: AVQueuePlayer
     internal var cancellables: Set<AnyCancellable> = []
     internal var remoteCommandCenter: RemoteCommandCenter?
     internal var nowPlayingInfoCenter: NowPlayingInfoCenter?
@@ -13,7 +13,8 @@ import Combine
     // MARK: - Init
 
     public override init() {
-        self.player = AVPlayer()
+        self.player = AVQueuePlayer()
+
         super.init()
         self.remoteCommandCenter = .init(
             radioPlayer: self
