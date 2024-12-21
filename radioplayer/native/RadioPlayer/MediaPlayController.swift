@@ -27,8 +27,11 @@ import Combine
 
         // Replace `nowPlayingInfo` on completion
         didPlayToEndTime
+            .map { _ in () }
+            .handleEvents(receiveOutput: deactivateAudioSession)
             .map { _ in nil }
             .assign(to: &$nowPlayingInfo)
+
         // If we continue to use `CustomAVPlayerItem` we could avoid the `nowPlayingInfo` published property:
         player
             .publisher(for: \.currentItem)
@@ -50,7 +53,15 @@ import Combine
             try audioSession.setCategory(.playback, mode: .default, policy: .longFormAudio)
             try audioSession.setActive(true)
         } catch {
-            print("Error in setting up audio session \(error)")
+            print("Error in setting up audio session: \(error)")
+        }
+    }
+
+    func deactivateAudioSession() {
+        do {
+            try audioSession.setActive(false)
+        } catch {
+            print("Error in deactivating audio session: \(error)")
         }
     }
 
