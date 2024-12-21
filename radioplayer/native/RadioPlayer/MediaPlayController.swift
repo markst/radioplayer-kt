@@ -25,6 +25,17 @@ import Combine
 
         setupNotifications()
 
+        // Replace `nowPlayingInfo` on completion
+        didPlayToEndTime
+            .map { _ in nil }
+            .assign(to: &$nowPlayingInfo)
+        // If we continue to use `CustomAVPlayerItem` we could avoid the `nowPlayingInfo` published property:
+        player
+            .publisher(for: \.currentItem)
+            .compactMap { $0 as? CustomAVPlayerItem }
+            .map { $0.info }
+            .removeDuplicates()
+        
         // TODO: Figure out why I was looking up current outputs:
         // AVAudioSession.sharedInstance().currentRoute.outputs.first?.portType == .
         
