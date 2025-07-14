@@ -16,11 +16,7 @@ swiftklib {
 
 kotlin {
     androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
+
     }
     
     val xcf = XCFramework()
