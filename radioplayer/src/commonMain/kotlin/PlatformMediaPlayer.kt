@@ -7,6 +7,7 @@ enum class PlaybackState {
 }
 
 interface MediaPlayerItem {
+    val id: String
     val title: String
     val artist: String?
     val url: String // Use String to be platform-agnostic
