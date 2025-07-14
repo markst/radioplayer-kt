@@ -3,14 +3,13 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.swiftklib)
+    alias(libs.plugins.spmForKmp)
 }
 
-swiftklib {
+swiftPackageConfig {
     create("RadioPlayer") {
-        path = file("native/RadioPlayer")
-        packageName("dev.markturnip.radioplayer")
-        minIos = 14
+        // your embedded swift is inside the folder src/swift/RadioPlayer
+        minIos = "14.0"
     }
 }
 
@@ -68,6 +67,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
+
 dependencies {
     implementation(libs.androidx.media3.common)
 }

@@ -3,8 +3,8 @@ agp = "8.5.2"
 koin = "3.5.6"
 kotlin = "2.0.21"
 kotlinx = "1.9.0"
-swiftklib = "0.6.3"
 media3Exoplayer = "1.5.0"
+spmForKmp = "0.11.3"
 
 [libraries]
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
@@ -18,4 +18,4 @@ androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-swiftklib = { id = "io.github.ttypic.swiftklib", version.ref = "swiftklib" }
+spmForKmp = { id = "io.github.frankois944.spmForKmp", version.ref = "spmForKmp" }
