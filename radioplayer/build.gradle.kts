@@ -8,8 +8,8 @@ plugins {
 
 swiftPackageConfig {
     create("RadioPlayer") {
-        // your embedded swift is inside the folder src/swift/RadioPlayer
         minIos = "14.0"
+        customPackageSourcePath = "./native/RadioPlayer"
     }
 }
 
