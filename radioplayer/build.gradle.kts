@@ -7,10 +7,18 @@ plugins {
 }
 
 swiftPackageConfig {
-    create("RadioPlayer") {
+    create("radioplayer") {
         minIos = "14.0"
         packageDependencyPrefix = "dev.markst"
-        customPackageSourcePath = "./native/RadioPlayer"
+        dependency {
+            localPackage(
+                path = "$projectDir/../",
+                packageName = "RadioPlayer",
+                products = {
+                    add("RadioPlayer", exportToKotlin = true)
+                }
+            )
+        }
     }
 }
 
@@ -33,7 +41,7 @@ kotlin {
         it.compilations {
             val main by getting {
                 cinterops {
-                    create("RadioPlayer")
+                    create("radioplayer")
                 }
             }
         }
@@ -59,7 +67,7 @@ kotlin {
 
 android {
     namespace = "dev.markturnip.radioplayer"
-    compileSdk = 34
+    compileSdk = 36
     defaultConfig {
         minSdk = 24
     }
