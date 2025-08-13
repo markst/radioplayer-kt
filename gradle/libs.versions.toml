@@ -3,8 +3,8 @@ agp = "8.11.1"
 koin = "4.1.0"
 kotlin = "2.2.0"
 kotlinx = "1.10.2"
-media3Exoplayer = "1.7.1"
-spmForKmp = "0.11.3"
+media3Exoplayer = "1.8.0"
+spmForKmp = "1.0.0-Beta03"
 
 [libraries]
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
