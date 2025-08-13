@@ -10,15 +10,7 @@ swiftPackageConfig {
     create("radioplayer") {
         minIos = "14.0"
         packageDependencyPrefix = "dev.markst"
-        dependency {
-            localPackage(
-                path = "$projectDir/../",
-                packageName = "RadioPlayer",
-                products = {
-                    add("RadioPlayer", exportToKotlin = true)
-                }
-            )
-        }
+        customPackageSourcePath = "./native"
     }
 }
 
