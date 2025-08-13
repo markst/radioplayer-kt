@@ -9,6 +9,7 @@ plugins {
 swiftPackageConfig {
     create("RadioPlayer") {
         minIos = "14.0"
+        packageDependencyPrefix = "dev.markst"
         customPackageSourcePath = "./native/RadioPlayer"
     }
 }
