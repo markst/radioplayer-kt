@@ -3,15 +3,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.swiftklib)
-}
-
-swiftklib {
-    create("RadioPlayer") {
-        path = file("native/RadioPlayer")
-        packageName("dev.markturnip.radioplayer")
-        minIos = 14
-    }
 }
 
 kotlin {
@@ -28,15 +19,17 @@ kotlin {
         it.binaries.framework {
             baseName = "radioplayer"
             xcf.add(this)
-            isStatic = true
+            // Dynamic framework required for SwiftPM import integration
+            isStatic = false
         }
-        it.compilations {
-            val main by getting {
-                cinterops {
-                    create("RadioPlayer")
-                }
-            }
-        }
+    }
+
+    swiftPMDependencies {
+        iosDeploymentVersion.set("14.0")
+        localPackage(
+            path = projectDir.resolve("native/RadioPlayer"),
+            products = listOf("RadioPlayer")
+        )
     }
 
     sourceSets {

@@ -10,7 +10,7 @@ This repository demonstrates how a package can be structured to share implementa
 - Kotlin iOS Multiplatform Package
 - Swift Package
 
-By leveraging the Gradle Plugin [swift-klib-plugin](https://github.com/a-sit-plus/swift-klib-plugin) for injecting Swift code into the Kotlin Multiplatform Mobile shared module, the iOS RadioPlayer implementation is native Swift code rather than using interpolation. This means we can serve the Swift code as its own independent `Package.swift`.
+By leveraging the native Kotlin SwiftPM import feature (Kotlin 2.4.0-titan-214) for importing Swift code into the Kotlin Multiplatform Mobile shared module, the iOS RadioPlayer implementation is native Swift code rather than using interpolation. This means we can serve the Swift code as its own independent `Package.swift`.
 
 ### Multi-Purpose
 
@@ -22,7 +22,7 @@ This means one repository can serve as both a Kotlin Multiplatform Package and a
 
 ## iOS Package
 
-By leveraging the Gradle Plugin for injecting Swift code into the Kotlin Multiplatform Mobile shared module [swift-klib-plugin](https://github.com/a-sit-plus/swift-klib-plugin), RadioPlayer is implemented as a native Swift package.
+By leveraging the native Kotlin SwiftPM import for importing Swift code into the Kotlin Multiplatform Mobile shared module, RadioPlayer is implemented as a native Swift package.
 
 The iOS component can be developed and maintained independently using the Swift Package Manager, making it easier to manage native iOS code.
 
