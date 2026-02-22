@@ -1,10 +1,17 @@
-import io.github.frankois944.spmForKmp.swiftPackageConfig
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.spmForKmp)
+    alias(libs.plugins.swiftklib)
+}
+
+swiftklib {
+    create("RadioPlayer") {
+        path = file("native/RadioPlayer")
+        packageName("dev.markturnip.radioplayer")
+        minIos = 14
+    }
 }
 
 kotlin {
@@ -17,15 +24,18 @@ kotlin {
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
-    ).forEach { target ->
-        target.binaries.framework {
+    ).forEach {
+        it.binaries.framework {
             baseName = "radioplayer"
             xcf.add(this)
             isStatic = true
         }
-        target.swiftPackageConfig(cinteropName = "RadioPlayer") {
-            minIos = "14.0"
-            customPackageSourcePath = "${projectDir.resolve("native")}"
+        it.compilations {
+            val main by getting {
+                cinterops {
+                    create("RadioPlayer")
+                }
+            }
         }
     }
 
