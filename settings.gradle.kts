@@ -17,5 +17,5 @@ dependencyResolutionManagement {
     }
 }
 
-//rootProject.name = "radioplayer"
+rootProject.name = "radioplayer-kt"
 include(":radioplayer")
