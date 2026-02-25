@@ -53,11 +53,8 @@ actual final class PlatformMediaPlayer actual constructor() : KoinComponent {
                 if (isPlaying) {
                     _state.value = PlaybackState.PLAYING
                     handler.post(updateProgressRunnable)
-                } else {
-                    handler.removeCallbacks(updateProgressRunnable)
-                    if (exoPlayer.playbackState == Player.STATE_READY) {
-                        _state.value = PlaybackState.PAUSED
-                    }
+                } else if (exoPlayer.playbackState == Player.STATE_READY) {
+                    _state.value = PlaybackState.PAUSED
                 }
             }
 
