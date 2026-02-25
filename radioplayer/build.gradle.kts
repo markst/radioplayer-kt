@@ -12,7 +12,6 @@ kotlin {
     
     val xcf = XCFramework()
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach {
@@ -27,7 +26,7 @@ kotlin {
     swiftPMDependencies {
         iosDeploymentVersion.set("14.0")
         localPackage(
-            path = projectDir.resolve("../"),
+            path = projectDir.resolve("native"),
             products = listOf("RadioPlayer")
         )
     }
