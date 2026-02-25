@@ -51,9 +51,13 @@ actual final class PlatformMediaPlayer actual constructor() : KoinComponent {
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 if (isPlaying) {
+                    _state.value = PlaybackState.PLAYING
                     handler.post(updateProgressRunnable)
                 } else {
                     handler.removeCallbacks(updateProgressRunnable)
+                    if (exoPlayer.playbackState == Player.STATE_READY) {
+                        _state.value = PlaybackState.PAUSED
+                    }
                 }
             }
 
@@ -74,11 +78,11 @@ actual final class PlatformMediaPlayer actual constructor() : KoinComponent {
     }
 
     actual fun play() {
-        exoPlayer.playWhenReady = true
+        exoPlayer.play()
     }
 
     actual fun pause() {
-        exoPlayer.playWhenReady = false
+        exoPlayer.pause()
     }
 
     actual fun stop() {
