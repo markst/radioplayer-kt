@@ -27,7 +27,7 @@ kotlin {
     swiftPMDependencies {
         iosDeploymentVersion.set("14.0")
         localPackage(
-            path = projectDir.resolve("native/RadioPlayer"),
+            path = projectDir.resolve("../"),
             products = listOf("RadioPlayer")
         )
     }
