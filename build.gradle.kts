@@ -1,6 +1,6 @@
 buildscript {
     dependencies.constraints {
-        "classpath"("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.0-titan-214!!")
+        "classpath"("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.0-titan-218!!")
     }
 }
 
