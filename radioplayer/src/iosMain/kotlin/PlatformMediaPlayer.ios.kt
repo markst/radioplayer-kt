@@ -5,13 +5,11 @@ import swiftPMImport.dev.markturnip.radioplayer.RadioPlayerStatePaused
 import swiftPMImport.dev.markturnip.radioplayer.RadioPlayerStatePlaying
 import swiftPMImport.dev.markturnip.radioplayer.RadioPlayerStateStopped
 import kotlinx.cinterop.ExperimentalForeignApi
-import platform.Foundation.NSURL
 
 @OptIn(ExperimentalForeignApi::class)
 actual class PlatformMediaPlayer actual constructor() : MediaPlayController() {
     actual fun playItem(mediaPlayerItem: MediaPlayerItem) {
-        val url = NSURL(string = mediaPlayerItem.url)
-        playWithUrl(url, at = null)
+        playWithUrl(mediaPlayerItem.url.toNSURL(), at = null)
     }
 
     actual fun subscribeState(callback: (PlaybackState) -> Unit) {
