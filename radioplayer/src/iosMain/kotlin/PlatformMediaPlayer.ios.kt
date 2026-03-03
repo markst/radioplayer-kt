@@ -1,9 +1,9 @@
 package dev.markturnip.radioplayer
-import dev.markturnip.radioplayer.MediaPlayController
-import dev.markturnip.radioplayer.RadioPlayerStateBuffering
-import dev.markturnip.radioplayer.RadioPlayerStatePaused
-import dev.markturnip.radioplayer.RadioPlayerStatePlaying
-import dev.markturnip.radioplayer.RadioPlayerStateStopped
+import swiftPMImport.dev.markturnip.radioplayer.MediaPlayController
+import swiftPMImport.dev.markturnip.radioplayer.RadioPlayerStateBuffering
+import swiftPMImport.dev.markturnip.radioplayer.RadioPlayerStatePaused
+import swiftPMImport.dev.markturnip.radioplayer.RadioPlayerStatePlaying
+import swiftPMImport.dev.markturnip.radioplayer.RadioPlayerStateStopped
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSURL
 
