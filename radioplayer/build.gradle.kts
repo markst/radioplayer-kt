@@ -1,8 +1,10 @@
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.mavenPublish)
 }
 
 kotlin {
@@ -62,4 +64,42 @@ android {
 }
 dependencies {
     implementation(libs.androidx.media3.common)
+}
+
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+
+    signAllPublications()
+
+    coordinates(
+        groupId = "dev.markturnip",
+        artifactId = "radioplayer",
+        version = project.findProperty("VERSION_NAME") as String? ?: "0.1.0"
+    )
+
+    pom {
+        name = "RadioPlayer"
+        description = "Kotlin Multiplatform radio player library with ExoPlayer (Android) and AVPlayer (iOS) backends."
+        inceptionYear = "2024"
+        url = "https://github.com/markst/radioplayer-kt"
+        licenses {
+            license {
+                name = "MIT License"
+                url = "https://opensource.org/licenses/MIT"
+                distribution = "repo"
+            }
+        }
+        developers {
+            developer {
+                id = "markst"
+                name = "Mark Turriff"
+                url = "https://github.com/markst"
+            }
+        }
+        scm {
+            url = "https://github.com/markst/radioplayer-kt"
+            connection = "scm:git:git://github.com/markst/radioplayer-kt.git"
+            developerConnection = "scm:git:ssh://git@github.com/markst/radioplayer-kt.git"
+        }
+    }
 }
