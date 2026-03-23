@@ -3,6 +3,7 @@ agp = "8.13.2"
 koin = "3.5.6"
 kotlin = "2.4.0-titan-218"
 kotlinx = "1.9.0"
+mavenPublish = "0.30.0"
 media3Exoplayer = "1.5.0"
 
 [libraries]
@@ -17,3 +18,4 @@ androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
