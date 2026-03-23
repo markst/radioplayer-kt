@@ -72,7 +72,7 @@ mavenPublishing {
     signAllPublications()
 
     coordinates(
-        groupId = "dev.markturnip",
+        groupId = "io.github.markst",
         artifactId = "radioplayer",
         version = project.findProperty("VERSION_NAME") as String? ?: "0.1.0"
     )
