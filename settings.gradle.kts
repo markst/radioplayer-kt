@@ -19,3 +19,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "radioplayer-kt"
 include(":radioplayer")
+include(":tests")
