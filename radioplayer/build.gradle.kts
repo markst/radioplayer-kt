@@ -15,10 +15,9 @@ swiftklib {
 }
 
 kotlin {
-    androidTarget {
+    androidTarget {}
+    jvm()
 
-    }
-    
     val xcf = XCFramework()
     listOf(
         iosX64(),
