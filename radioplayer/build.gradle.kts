@@ -1,13 +1,26 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKmpLibrary)
 }
 
 kotlin {
-    androidTarget {
+    compilerOptions {
+        freeCompilerArgs.add("-Xskip-metadata-version-check")
+    }
 
+    android {
+        namespace = "dev.markturnip.radioplayer"
+        compileSdk = 34
+        minSdk = 24
+
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+        }
     }
     
     val xcf = XCFramework()
@@ -24,8 +37,8 @@ kotlin {
     }
 
     swiftPMDependencies {
-        iosDeploymentVersion.set("14.0")
-        localPackage(
+        iosMinimumDeploymentTarget.set("14.0")
+        localSwiftPackage(
             directory = layout.projectDirectory.dir("native"),
             products = listOf("RadioPlayer")
         )
@@ -33,13 +46,13 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.androidx.media3.common)
             implementation(libs.androidx.media3.exoplayer)
             implementation(libs.androidx.media3.exoplayer.hls)
             implementation(libs.koin.android)
         }
         commonMain.dependencies {
+            implementation(libs.kotlinx.coroutines.core)
             // TODO: Figure out passing `Context` to `ExoPlayer` without koin:
             implementation(libs.koin.core)
         }
@@ -47,19 +60,4 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
-}
-
-android {
-    namespace = "dev.markturnip.radioplayer"
-    compileSdk = 34
-    defaultConfig {
-        minSdk = 24
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-}
-dependencies {
-    implementation(libs.androidx.media3.common)
 }
