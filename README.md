@@ -35,3 +35,37 @@ It can serve as a native iOS component:
 On Android, it utilizes ExoPlayer, a powerful and flexible media player.
 
 ![Android Package](docs/media/android-package.png)
+
+## Integration
+
+### Android
+
+Initialize the player in your `Application.onCreate()`:
+
+```kotlin
+class MyApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        PlatformMediaPlayer.initialize(this)
+    }
+}
+```
+
+Then create and retain a reference — call `release()` when no longer needed:
+
+```kotlin
+val player = PlatformMediaPlayer()
+player.playItem(myMediaItem)
+
+// When finished:
+player.release()
+```
+
+### iOS
+
+Add the KMP framework to your Xcode project, then use `PlatformMediaPlayer` directly — no additional setup required:
+
+```swift
+let player = PlatformMediaPlayer()
+player.playItem(mediaPlayerItem: myItem)
+```
