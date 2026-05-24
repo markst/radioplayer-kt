@@ -14,6 +14,7 @@ local.properties
 xcuserdata
 xcuserdata/
 DerivedData/
+.swiftpm-locks
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
