@@ -4,7 +4,6 @@ import android.os.Handler
 import android.os.Looper
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 
 import androidx.media3.common.MediaItem
@@ -19,9 +18,9 @@ import org.koin.core.component.get
 private const val POLL_INTERVAL_MS = 1000L // 1 second
 
 actual final class PlatformMediaPlayer actual constructor() : KoinComponent {
-    private val exoPlayer: ExoPlayer = ExoPlayer.Builder(get()).build()
+    private val exoPlayer: Player = ExoPlayer.Builder(get()).build()
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val handler = Handler(Looper.getMainLooper())
     // Self-rescheduling progress poller: only re-posts itself while playing,
     // so it stops automatically when playback pauses or ends.
