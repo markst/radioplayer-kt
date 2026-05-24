@@ -49,12 +49,9 @@ kotlin {
             implementation(libs.androidx.media3.common)
             implementation(libs.androidx.media3.exoplayer)
             implementation(libs.androidx.media3.exoplayer.hls)
-            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
-            // TODO: Figure out passing `Context` to `ExoPlayer` without koin:
-            implementation(libs.koin.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
