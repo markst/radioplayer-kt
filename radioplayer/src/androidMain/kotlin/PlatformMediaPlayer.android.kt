@@ -12,13 +12,18 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.flow.filterNotNull
 
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-
 private const val POLL_INTERVAL_MS = 1000L // 1 second
 
-actual final class PlatformMediaPlayer actual constructor() : KoinComponent {
-    private val exoPlayer: Player = ExoPlayer.Builder(get()).build()
+actual final class PlatformMediaPlayer actual constructor() {
+    companion object {
+        private lateinit var appContext: android.content.Context
+
+        fun initialize(context: android.content.Context) {
+            appContext = context.applicationContext
+        }
+    }
+
+    private val exoPlayer: Player = ExoPlayer.Builder(appContext).build()
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val handler = Handler(Looper.getMainLooper())
