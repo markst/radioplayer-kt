@@ -105,7 +105,7 @@ actual final class PlatformMediaPlayer actual constructor() {
         exoPlayer.setMediaItem(mediaItem)
         exoPlayer.prepare()
         play()
-        appContext.startService(Intent(appContext, MediaPlayerService::class.java))
+        appContext.startForegroundService(Intent(appContext, MediaPlayerService::class.java))
     }
 
     // Use play()/pause() rather than playWhenReady so ExoPlayer applies the

@@ -31,16 +31,16 @@ class MediaPlayerService : MediaSessionService() {
         super.onCreate()
         val player = PlatformMediaPlayer.instance
             ?: error("MediaPlayerService: PlatformMediaPlayer not initialized. Call PlatformMediaPlayer.initialize(context) before starting the service.")
-        mediaSession = MediaSession.Builder(this, player).build()
+        mediaSession = MediaSession.Builder(this, player).build().also { addSession(it) }
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? =
         mediaSession
 
     override fun onDestroy() {
-        mediaSession?.run {
-            player.release()
-            release()
+        mediaSession?.let {
+            removeSession(it)
+            it.release()
             mediaSession = null
         }
         super.onDestroy()
