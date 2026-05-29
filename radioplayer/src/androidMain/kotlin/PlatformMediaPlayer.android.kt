@@ -1,5 +1,7 @@
 package dev.markturnip.radioplayer
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 
@@ -7,6 +9,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -17,13 +20,18 @@ private const val POLL_INTERVAL_MS = 1000L // 1 second
 actual final class PlatformMediaPlayer actual constructor() {
     companion object {
         private lateinit var appContext: android.content.Context
+        // Exposed so MediaPlayerService can attach a MediaSession to the same player instance.
+        var instance: ExoPlayer? = null
+            private set
 
         fun initialize(context: android.content.Context) {
             appContext = context.applicationContext
         }
     }
 
-    private val exoPlayer: Player = ExoPlayer.Builder(appContext).build()
+    private val exoPlayer: ExoPlayer = ExoPlayer.Builder(appContext).build().also {
+        instance = it
+    }
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val handler = Handler(Looper.getMainLooper())
@@ -85,12 +93,19 @@ actual final class PlatformMediaPlayer actual constructor() {
     // </editor-fold>
 
     actual fun playItem(mediaPlayerItem: MediaPlayerItem) {
+        val metadata = MediaMetadata.Builder()
+            .setTitle(mediaPlayerItem.title)
+            .setArtist(mediaPlayerItem.artist)
+            .setArtworkUri(mediaPlayerItem.artworkUrl?.let { Uri.parse(it) })
+            .build()
         val mediaItem = MediaItem.Builder()
             .setUri(mediaPlayerItem.url)
+            .setMediaMetadata(metadata)
             .build()
         exoPlayer.setMediaItem(mediaItem)
         exoPlayer.prepare()
         play()
+        appContext.startService(Intent(appContext, MediaPlayerService::class.java))
     }
 
     // Use play()/pause() rather than playWhenReady so ExoPlayer applies the
@@ -107,6 +122,7 @@ actual final class PlatformMediaPlayer actual constructor() {
         exoPlayer.stop()
         _state.value = PlaybackState.STOPPED
         handler.removeCallbacks(updateProgressRunnable)
+        appContext.stopService(Intent(appContext, MediaPlayerService::class.java))
     }
 
     actual fun skip(delta: Double) {
