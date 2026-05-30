@@ -1,7 +1,10 @@
 package dev.markturnip.radioplayer
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 
@@ -105,7 +108,7 @@ actual final class PlatformMediaPlayer actual constructor() {
         exoPlayer.setMediaItem(mediaItem)
         exoPlayer.prepare()
         play()
-        appContext.startForegroundService(Intent(appContext, MediaPlayerService::class.java))
+        startForegroundServiceIfAllowed()
     }
 
     // Use play()/pause() rather than playWhenReady so ExoPlayer applies the
@@ -154,5 +157,14 @@ actual final class PlatformMediaPlayer actual constructor() {
         exoPlayer.release()
         handler.removeCallbacksAndMessages(null)
         coroutineScope.cancel()
+    }
+
+    private fun startForegroundServiceIfAllowed() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted = appContext.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+            if (!granted) return
+        }
+        appContext.startForegroundService(Intent(appContext, MediaPlayerService::class.java))
     }
 }
