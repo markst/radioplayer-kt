@@ -1,10 +1,7 @@
 package dev.markturnip.radioplayer
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 
@@ -29,19 +26,6 @@ actual final class PlatformMediaPlayer actual constructor() {
 
         fun initialize(context: android.content.Context) {
             appContext = context.applicationContext
-        }
-
-        /**
-         * Start the foreground media service if notification permission is granted.
-         * Can be called again after the user grants notification permission.
-         */
-        fun startForegroundServiceIfAllowed() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                val granted = appContext.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
-                    PackageManager.PERMISSION_GRANTED
-                if (!granted) return
-            }
-            appContext.startForegroundService(Intent(appContext, MediaPlayerService::class.java))
         }
     }
 
@@ -121,7 +105,7 @@ actual final class PlatformMediaPlayer actual constructor() {
         exoPlayer.setMediaItem(mediaItem)
         exoPlayer.prepare()
         play()
-        startForegroundServiceIfAllowed()
+        appContext.startForegroundService(Intent(appContext, MediaPlayerService::class.java))
     }
 
     // Use play()/pause() rather than playWhenReady so ExoPlayer applies the
